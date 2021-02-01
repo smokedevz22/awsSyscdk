@@ -1,0 +1,158 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Pruebas despliegue servicios KIRA",
+    "Resources": {
+        "ServerlessDeploymentBucket-msys": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+                "BucketEncryption": {
+                    "ServerSideEncryptionConfiguration": [
+                        {
+                            "ServerSideEncryptionByDefault": {
+                                "SSEAlgorithm": "AES256"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        "KiraDashslsDashserviceLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+                "LogGroupName": "/aws/lambda/dev-kira-msys"
+            }
+        },
+        "IamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "lambda.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                "Policies": [
+                    {
+                        "PolicyName": {
+                            "Fn::Join": [
+                                "-",
+                                [
+                                    "dev",
+                                    "kira",
+                                    "msys"
+                                ]
+                            ]
+                        },
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "logs:CreateLogStream"
+                                    ],
+                                    "Resource": [
+                                        {
+                                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/dev-kira-msys*:*"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "logs:PutLogEvents"
+                                    ],
+                                    "Resource": [
+                                        {
+                                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/dev-kira-msys*:*:*"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "Path": "/",
+                "RoleName": {
+                    "Fn::Join": [
+                        "-",
+                        [
+                            "dev",
+                            "kira",
+                            "msys",
+                            {
+                                "Ref": "AWS::Region"
+                            },
+                            "lambdaRole"
+                        ]
+                    ]
+                }
+            }
+        },
+        "KiraDashslsDashserviceLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Code": {
+                    "S3Bucket": {
+                        "Ref": "ServerlessDeploymentBucket-msys"
+                    },
+                    "S3Key": "serverless/kira-sls/develop/1563216958969-2019-07-15T18:55:58.969Z/kira-sls.zip"
+                },
+                "FunctionName": "kira-sls-develop-kira-sls-service",
+                "Handler": "service/index.handler",
+                "MemorySize": 1024,
+                "Role": {
+                    "Fn::GetAtt": [
+                        "IamRoleLambdaExecution",
+                        "Arn"
+                    ]
+                },
+                "Runtime": "nodejs10.x",
+                "Timeout": 30,
+                "Environment": {
+                    "Variables": {
+                        "JWT_EXPIRES": 10,
+                        "JWT_SECRET": "VW5hIENsNHYzIHNlY3IzdDQ="
+                    }
+                }
+            },
+            "DependsOn": [
+                "KiraDashslsDashserviceLogGroup",
+                "IamRoleLambdaExecution"
+            ]
+        },
+        "KiraDashslsDashserviceLambdaVersionOuHMe9RQwQPk0DdcMw9MaJaaz18qcmXcO5x3ipFV8": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "KiraDashslsDashserviceLambdaFunction"
+                },
+                "CodeSha256": "ETcXkcimoNCmg4eXabfK8uTfl97MzzrvC884XmB/Ago="
+            }
+        }
+    },
+    "Outputs": {
+        "ServerlessDeploymentBucketName": {
+            "Value": {
+                "Ref": "ServerlessDeploymentBucket"
+            }
+        },
+        "KiraDashslsDashserviceLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+                "Ref": "KiraDashslsDashserviceLambdaVersionOuHMe9RQwQPk0DdcMw9MaJaaz18qcmXcO5x3ipFV8"
+            }
+        }
+    }
+}

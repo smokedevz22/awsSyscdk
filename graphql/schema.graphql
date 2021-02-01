@@ -1,0 +1,767 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Cotizacion {
+  numero_cotizacion: String
+}
+
+type CreateCuentaDepositoResponse {
+  response: String
+  success: Boolean
+}
+
+type CreateMedioPagoResponse {
+  fecha_vencimiento: String
+  id_medio_pago: Int
+  medio_pago: String
+  numero_tarjeta: String
+  principal: Boolean
+  rut_usuario: String
+  tipo_tarjeta: String
+}
+
+# inputCreateSiniestro
+type CreateSiniestroResponse {
+  codigo_estado: String
+  fecha_contacto: String
+  numero_siniestro: String
+}
+
+type DesestimarSiniestroResponse {
+  codigo_estado: String
+}
+
+type DetalleCobroPoliza {
+  fecha_fin: String
+  fecha_inicio: String
+  monto: String
+  nombre_cotizacion: String
+  numero_poliza: String
+  plan: String
+  tipo_actividad: String
+  valor_uf: String
+}
+
+type DetallePoliza {
+  Estado_poliza: Int
+  Fecha_emision: String
+  codigo_cobertura: String
+  codigo_producto: String
+  coordenada_final_lat: String
+  coordenada_final_lon: String
+  coordenada_incial_lat: String
+  coordenada_incial_lon: String
+  direccion_final: String
+  direccion_inicial: String
+  fecha_cotizacion: String
+  fecha_fin: String
+  fecha_inicio: String
+  iva: String
+  nombre_comercial: String
+  nombre_cotizacion: String
+  numero_cotizacion: String
+  numero_poliza: String
+  periodo: String
+  plan: String
+  precio_cotizacion: String
+  precio_neto: String
+  rut: String
+  tipo_actividad: String
+  usuario_principal: String
+  valor_minimo: String
+}
+
+type DetallePolizaFull {
+  poliza: String
+  response: String
+}
+
+type FinishCotizacionResponse {
+  completada: Boolean
+  completado: Boolean
+}
+
+type GetCausalesSiniestroResponse {
+  codigo: String
+  es_cubierta: Boolean
+  glosa: String
+  mensaje: String
+}
+
+type GetMedioDepositoResponse {
+  id_medio_deposito: String
+  nombre_banco: String
+  nombre_tipo_cuenta: String
+  numero_cuenta: String
+  rut_cuenta: String
+}
+
+type ListMedioPagoResponse {
+  fecha_vencimiento: String
+  id_medio_pago: String
+  medio_pago: String
+  medio_pago_glosa: String
+  numero_tarjeta: String
+  principal: Boolean
+  tipo_tarjeta: String
+  tipo_tarjeta_glosa: String
+}
+
+type ListaPagosPoliza {
+  fecha_fin: String
+  fecha_inicio: String
+  id_cobro: Int
+  monto: Float
+  nombre_cotizacion: String
+  numero_poliza: String
+  plan: String
+  tipo_actividad: String
+  valor_uf: String
+}
+
+type ListarCoberturas {
+  capital_max: String
+  capital_min: String
+  codigo_cobertura: String
+  id_cobertura: String
+  nombre_cobertura: String
+}
+
+type ListarCotizaciones {
+  fecha_cotizacion: String
+  foto: String
+  numero_cotizacion: String
+}
+
+type ListarPlanes {
+  brief: String
+  caracteristicas: String
+  codigo_producto: String
+  id_plan: String
+  nombre_plan: String
+  plan: String
+}
+
+type ListarPolizas {
+  Estado_poliza: Int
+  Fecha_emision: String
+  foto: String
+  nombre_cotizacion: String
+  numero_poliza: String
+  numero_siniestros: String
+  poliza_pdf: String
+}
+
+type ListarProductos {
+  codigo_producto: String
+  descripcion: String
+  descripcion_larga: String
+  imagen: String
+  logo: String
+  nombre_comercial: String
+  nombre_tecnico: String
+  periodo: String
+  valor_minimo: Int
+}
+
+type ModeloAuto {
+  id: Int
+  nombre: String
+}
+
+type ModeloYear {
+  year: Int
+}
+
+type Multimedia {
+  foto: String
+  nombre: String
+}
+
+type Mutation {
+  createBank(input: BankInput): Bank!
+
+  createCuentaDeposito(
+    input: CreateCuentaDepositoInput!
+  ): CreateCuentaDepositoResponse
+  createMedioPago(input: CreateMedioPagoInput!): CreateMedioPagoResponse
+  createPoliza(input: CreatePolizaInput!): Poliza
+  createSiniestro(input: CreateSiniestroInput!): CreateSiniestroResponse
+  deleteCuentaDeposito(id_cuenta_deposito: Int!): ReponseDeleteCuentaDeposito
+  deleteMedioPago(
+    id_medio_pago: Int!
+    rut_usuario: String!
+  ): ReponseDeleteMedioPago
+  deletePoliza(numero_poliza: String!): DetallePoliza
+  deletePoliza2(input: DeletePoliza!): Poliza
+  desestimarSiniestro(numero_siniestro: Int!): DesestimarSiniestroResponse
+  finishUploadCotizacion(numero_cotizacion: String!): FinishCotizacionResponse
+  finishUploadSiniestro(numero_siniestro: String!): FinishCotizacionResponse
+  registerCobertura(input: RegisterCoberturaInput!): coberturaProducto
+  registerCotizacion(input: RegisterCotizacionInput!): Cotizacion
+  registerMultimedia(input: RegisterMultimediaInput!): Multimedia
+  registerPoliza(input: RegisterPolizaInput!): Poliza
+  registerUser(input: RegisterUserInput!): User
+  startPoliza(numero_poliza: String!): DetallePoliza
+
+  registerSubPlan(input: InputRegisterSubPlan!): SubPlan
+  registerPlan(input: InputRegisterPlan!): Plan
+  registerCoberturas(input: InputRegisterCobertura!): Cobertura
+
+  registerSiniestro(input: InputRegisterSiniestro!): Siniestro
+  registerActividad(input: InputRegisterActividad!): Actividad
+  registerProducto(input: InputRegisterProducto!): Producto
+  registrarNuevaPoliza(input: registrarNuevaPolizaInput): NuevaPoliza
+  registrarNuevaCotizacion(
+    input: registrarNuevaCotizacionInput
+  ): NuevaCotizacion
+  registrarNuevoSiniestro(input: registrarNuevoSiniestroInput): NuevoSiniestro
+}
+
+type Producto {
+  id: String
+  data_producto: String
+}
+type Actividad {
+  id: String
+  data_actividad: String
+}
+
+type Plan {
+  id: String
+  data_plan: String
+}
+
+type SubPlan {
+  id: String
+  id_plan: String
+  data_sub_plan: String
+}
+
+type Cobertura {
+  id: String
+  id_sub_plan: String
+  data_cobertura: String
+}
+type Siniestro {
+  nombre: String
+}
+
+type NuevaPoliza {
+  id: String
+  data_poliza: String
+}
+
+type NuevaCotizacion {
+  id: String
+  data_cotizacion: String
+  numero_cotizacion:String
+}
+type NuevoSiniestro {
+  id: String
+  data_siniestro: String
+}
+type ObtenerResumenCotizacion {
+  direccion_inicial: String
+  fecha_fin: String
+  fecha_inicio: String
+  nombre_cotizacion: String
+  tipo_actividad: String
+}
+
+type Pago {
+  id_pago: ID
+  metodoPago: String
+}
+
+type PauseResponse {
+  numero_poliza: String
+  response: String
+  total: Float
+}
+
+type PauseResponseT {
+  numero_poliza: String
+  response: String
+  total: Float
+}
+
+type Poliza {
+  Estado_poliza: Int
+  Fecha_emision: String
+  cod_prod: String
+  codigo_cotizacion: String
+  direccion_poliza: String
+  email: String
+  iva: String
+  medioPago: String
+  numero_cotizacion: String
+  numero_poliza: String
+  plan: String
+  poliza_pdf: String
+  prima_bruta: Int
+  prima_neta: Int
+  rut: String
+  tipo_actividad: String
+  usuario_principal: String
+}
+
+#  producto
+type Productos {
+  anexo_cp: String
+  carta_cp: String
+  codigo_producto: String
+  fecha_inicio: String
+  fecha_termino: String
+  imagen: String
+  logo: String
+  nombre_comercial: String
+  nombre_tecnico: String
+  producto_cp: String
+}
+
+type Bank {
+  id: String
+  codigo_banco: String
+  nombre_banco: String
+}
+
+type Query {
+  detalleCobroPoliza(id_cobro: Int): DetalleCobroPoliza
+  detallePolizaxxx(numero_poliza: String!): [DetallePoliza]
+  detallePolizaFull(numero_poliza: Int!): DetallePolizaFull
+  getAccountTypes: [ResponseAccountTypes]
+  getBanks: [Bank]
+  getCausalesSiniestro(codigo_producto: String!): [GetCausalesSiniestroResponse]
+  getListMediosPago(rut_usuario: String): [ListMedioPagoResponse]
+  getListSiniestroByPoliza(numero_poliza: Int!): [ResponseListSiniestro]
+  getMedioDeposito(rut_usuario: String): [GetMedioDepositoResponse]
+  getPrecioCobertura(input: InputPrecioCobertura): ResponsePrecioCobertura
+  getPrecioCoberturaAuto(
+    input: InputPrecioCoberturaAuto
+  ): ResponsePrecioCoberturaAuto
+  getPrecioMinimoCotizacion(
+    codigo_producto: String!
+    id_actividad: Int
+    id_plan: Int
+  ): ResponsePrecioMinimo
+  getPrecioMinimoCotizacionAuto(
+    id_modelo: Int
+    id_plan: Int
+    year: Int
+  ): ResponsePrecioMinimoAuto
+  getSiniestroDetail(numero_siniestro: Int!): SiniestroDetailResponse
+  htmlToPdf(numero_poliza: Int!): ResponsePdf
+  listaActividad(codigo_producto: String!): [actividades]
+  listaCobertura(id_plan: String!): [ListarCoberturas]
+  listaCobrosPoliza(rut: String!): [ListaPagosPoliza]
+  listaCotizacion(rut: String!): [ListarCotizaciones]
+  listaMarcaAuto: [marcasAuto]
+  listaModeloPorMarca(id_marca: Int!): [ModeloAuto]
+  listaPlan(codigo_producto: String!): [ListarPlanes]
+  listaPoliza(rut: String!): [ListarPolizas]
+  listaProductos: [ListarProductos]
+  listaTipDia: [UserTip]
+  listaYear: [ModeloYear]
+  login(clave: String!, email: String!): UserAuth
+  login2(clave: String!, email: String!): UserAuth
+  nuevaQuery: ResponseSendMail
+  pausePoliza(numero_poliza: Int!, valor_uf: String!): PauseResponse
+  pausePolizaT(numero_poliza: String!, valor_uf: String!): PauseResponseT
+  productByUser(rut: String!): Productos
+  resumenCotizacion(numero_cotizacion: String!): [ResumenCotizacion]
+  sendPolizaEmail(numero_poliza: Int!): ResponseSendMail
+  testDBConnection(numero_cotizacion: String!): TestResponse
+  updateSiniestroContactDate(
+    fecha_contacto: String!
+    numero_siniestro: Int!
+  ): ResponseUpdateContactDate
+  upload64(base64: String!, imageName: String!, rut: String!): S3response
+  uploadImage64(input: UploadImage64Input!): UploadImage64Response
+  uploadMultiple64(files: [ImageFilesInput]!, rut: String!): S3response
+  user(id: ID!): User
+
+  listasActividades: [Actividad]
+  listasPlanes: [Plan]
+  listasSubPlanes: [SubPlan]
+  listasPolizas: [NuevaPoliza]
+  listasCotizaciones: [NuevaCotizacion]
+  listasProductos: [Producto]
+  listasSiniestros: [NuevoSiniestro]
+  listasCoberturas: [Cobertura]
+  listasUsuario: [User]
+
+  detalleCotizacion(numero_cotizacion: String!): NuevaCotizacion
+  detallePoliza(numero_poliza: String!): NuevaPoliza
+  detalleSiniestro(numero_siniestro: String!): NuevoSiniestro
+
+}
+
+type ReponseDeleteCuentaDeposito {
+  deleted: Boolean
+  response: String
+}
+
+type ReponseDeleteMedioPago {
+  deleted: Boolean
+  response: String
+}
+
+type ResponseAccountTypes {
+  codigo: String
+  nombre: String
+}
+
+type ResponseBanks {
+  codigo_banco: String
+  nombre_banco: String
+}
+
+type ResponseHtmlToPdf {
+  pdf_base64: String
+}
+
+type ResponseListSiniestro {
+  fecha_denuncia: String
+  glosa: String
+  numero_siniestro: Int
+}
+
+type ResponsePdf {
+  base64: String
+  numero_poliza: Int
+  pdf_base64: String
+  response: String
+  success: Boolean
+}
+
+type ResponsePrecioCobertura {
+  response: String
+  success: Boolean
+  valor_uf: String
+}
+
+type ResponsePrecioCoberturaAuto {
+  response: String
+  success: Boolean
+  valor_total_bruto: String
+  valor_total_neto: String
+}
+
+type ResponsePrecioMinimo {
+  valor_uf: String
+}
+
+type ResponsePrecioMinimoAuto {
+  prima_bruta: Float
+  prima_neta: Float
+}
+
+type ResponseBank {
+  id: ID!
+  codigo_banco: String!
+  nombre_banco: String!
+}
+
+type ResponseSendMail {
+  response: String
+  success: Boolean
+}
+
+type ResponseUpdateContactDate {
+  fecha_contacto: String
+  numero_siniestro: Int
+}
+
+type ResumenCotizacion {
+  codigo_cobertura: String
+  codigo_producto: String
+  coordenada_final_lat: String
+  coordenada_final_lon: String
+  coordenada_incial_lat: String
+  coordenada_incial_lon: String
+  direccion_final: String
+  direccion_inicial: String
+  fecha_cotizacion: String
+  fecha_fin: String
+  fecha_inicio: String
+  id_marca_auto: Int
+  id_modelo_auto: Int
+  iva: String
+  marca_auto: String
+  modelo_auto: String
+  nombre_comercial: String
+  nombre_cotizacion: String
+  numero_cotizacion: String
+  periodo: String
+  plan: String
+  precio_cotizacion: String
+  precio_neto: String
+  rut: String
+  tipo_actividad: String
+  usuario_principal: String
+  valor_minimo: String
+  year_auto: Int
+}
+
+type S3response {
+  url: String
+}
+
+type SiniestroDetailResponse {
+  response: Int
+  siniestro: String
+}
+
+type TestResponse {
+  response: String
+}
+
+type UploadImage64Response {
+  contadorImagenes: String
+}
+
+type User {
+  apellido: String
+  celular: String
+  clave: String
+  email: String
+  mailrecuperacion: String
+  nombre: String
+  rut: String
+}
+
+type UserAuth {
+  apellido: String
+  email: String
+  isUnauthorized: Boolean
+  nombre: String
+  rut: String
+  token: String
+}
+
+type UserTip {
+  ContenidoTip: String
+  id_tip: ID
+}
+
+type actividades {
+  codigo_actividad: String
+  codigo_producto: String
+  id_actividad: String
+  logo_actividad: String
+  tipo_actividad: String
+  tipo_riesgo: String
+}
+
+type coberturaProducto {
+  afecta_iva: String
+  capital_max: Int
+  capital_min: Int
+  cobertura_pdf: String
+  codigo_cobertura: String
+  codigo_producto: String
+  fecha_inicio: String
+  fecha_termino: String
+  nombre_cobertura: String
+  pol_cad_cobertura: String
+  ramo_eerr: String
+  ramo_fecu: String
+  tabla_tarificacion: String
+  tasa_por_mil: String
+  tipo_riesgo: String
+  tipo_tarificacion: String
+  tramo_por_cargas: String
+}
+
+type marcasAuto {
+  id: Int
+  nombre: String
+}
+
+input BankInput {
+  id: ID!
+  codigo_banco: String
+  nombre_banco: String
+}
+
+input CreateCuentaDepositoInput {
+  codigo_banco: String
+  codigo_tipo_cuenta: String
+  numero_cuenta: String
+  rut_cuenta: String
+  rut_usuario: String
+}
+
+input CreateMedioPagoInput {
+  fecha_vencimiento: String
+  medio_pago: String
+  numero_tarjeta: String
+  principal: Boolean
+  rut_usuario: String
+  tipo_tarjeta: String
+}
+
+input CreatePolizaInput {
+  numero_cotizacion: String
+}
+
+input CreateSiniestroInput {
+  codigo_causal: String!
+  descripcion: String!
+  fecha_siniestro: String!
+  numero_poliza: Int!
+  rut_usuario: String!
+}
+
+input DeletePoliza {
+  id: ID!
+}
+
+input ImageFilesInput {
+  base64: String!
+  imageName: String!
+  type: String!
+}
+
+input InputPrecioCobertura {
+  codigo_producto: String
+  fecha_fin: String
+  fecha_inicio: String!
+  id_actividad: Int
+  id_plan: Int
+}
+
+input InputPrecioCoberturaAuto {
+  codigo_producto: String
+  fecha_fin: String
+  fecha_inicio: String!
+  id_modelo: Int
+  id_plan: Int
+  year: Int
+}
+
+# incompleta
+input RegisterCoberturaInput {
+  afecta_iva: String
+  capital_max: Int
+  capital_min: Int
+  cobertura_pdf: String
+  codigo_cobertura: String
+  codigo_producto: String
+  fecha_inicio: String
+  fecha_termino: String
+  nombre_cobertura: String
+  pol_cad_cobertura: String
+  ramo_eerr: String
+  ramo_fecu: String
+  tabla_tarificacion: String
+  tasa_por_mil: String
+  tipo_riesgo: String
+  tipo_tarificacion: String
+  tramo_por_cargas: String
+}
+
+input RegisterCotizacionInput {
+  capital: String
+  cobertura: String
+  codigo_cobertura: String
+  codigo_producto: String
+  coordenada_final_lat: String
+  coordenada_final_lon: String
+  coordenada_inicial_lat: String
+  coordenada_inicial_lon: String
+  direccion_final: String
+  direccion_inicial: String
+  fecha_cotizacion: String
+  fecha_fin: String
+  fecha_inicio: String
+  id_marca_auto: Int
+  id_modelo_auto: Int
+  iva: String
+  nombre_cotizacion: String
+  plan: String
+  precio_cotizacion: String
+  precio_neto: String
+  rut: String!
+  tipo_actividad: String
+  usuario_principal: String
+  year_auto: Int
+}
+
+input RegisterMultimediaInput {
+  foto: String
+  nombre: String
+  numero_cotizacion: String
+}
+
+input RegisterPolizaInput {
+  direccion_poliza: String
+  email: String
+  medioPago: String
+  numero_cotizacion: String
+  numero_poliza: String
+  plan: String
+  prima_bruta: Int
+  prima_neta: Int
+  rut: String
+  tipo_actividad: String
+  usuario_principal: String
+}
+
+input registrarNuevaPolizaInput {
+  data_poliza: String
+}
+
+input registrarNuevaCotizacionInput {
+  data_cotizacion: String
+}
+
+input registrarNuevoSiniestroInput {
+  data_siniestro: String
+}
+
+input RegisterUserInput {
+  apellido: String!
+  celular: String
+  clave: String!
+  email: String!
+  mailrecuperacion: String
+  nombre: String!
+  rut: String!
+}
+
+input InputRegisterPlan {
+  data_plan: String
+}
+
+input InputRegisterSubPlan {
+  id_plan: String
+  data_sub_plan: String
+}
+
+input InputRegisterCobertura {
+  id_sub_plan: String
+  data_cobertura: String
+}
+
+input InputRegisterSiniestro {
+  data_siniestro: String
+}
+
+input InputRegisterActividad {
+  data_actividad: String
+}
+
+input InputRegisterProducto {
+  data_producto: String
+}
+input UploadImage64Input {
+  image: ImageFilesInput
+  numero_cotizacion: String
+  numero_siniestro: Int
+  rut: String
+  tipo: String
+}

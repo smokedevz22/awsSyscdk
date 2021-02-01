@@ -1,0 +1,252 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "The AWS CloudFormation template for this Serverless application",
+    "Resources": {
+        "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+                "BucketEncryption": {
+                    "ServerSideEncryptionConfiguration": [
+                        {
+                            "ServerSideEncryptionByDefault": {
+                                "SSEAlgorithm": "AES256"
+                            }
+                        }
+                    ]
+                }
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "13b9d4f0-24bd-460a-a4bc-780def0d8069"
+                }
+            }
+        },
+        "KiraDashslsDashserviceLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+                "LogGroupName": "/aws/lambda/kira-sls-develop-kira-sls-service"
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "03b59fe2-13c9-4c0f-b2ca-d8acd1b6c8d5"
+                }
+            }
+        },
+        "IamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "lambda.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                "Policies": [
+                    {
+                        "PolicyName": {
+                            "Fn::Join": [
+                                "-",
+                                [
+                                    "develop",
+                                    "kira-sls",
+                                    "lambda"
+                                ]
+                            ]
+                        },
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "logs:CreateLogStream"
+                                    ],
+                                    "Resource": [
+                                        {
+                                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/kira-sls-develop*:*"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "logs:PutLogEvents"
+                                    ],
+                                    "Resource": [
+                                        {
+                                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/kira-sls-develop*:*:*"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "Path": "/",
+                "RoleName": {
+                    "Fn::Join": [
+                        "-",
+                        [
+                            "kira-sls",
+                            "develop",
+                            {
+                                "Ref": "AWS::Region"
+                            },
+                            "lambdaRole"
+                        ]
+                    ]
+                }
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "7517428a-4074-4538-b4b0-5bee70371ab7"
+                }
+            }
+        },
+        "KiraDashslsDashserviceLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Code": {
+                    "S3Bucket": {
+                        "Ref": "ServerlessDeploymentBucket"
+                    },
+                    "S3Key": "serverless/kira-sls/develop/1563216958969-2019-07-15T18:55:58.969Z/kira-sls.zip"
+                },
+                "FunctionName": "kira-sls-develop-kira-sls-service",
+                "Handler": "service/index.handler",
+                "MemorySize": 1024,
+                "Role": {
+                    "Fn::GetAtt": [
+                        "IamRoleLambdaExecution",
+                        "Arn"
+                    ]
+                },
+                "Runtime": "nodejs10.x",
+                "Timeout": 30,
+                "Environment": {
+                    "Variables": {
+                        "JWT_EXPIRES": 10,
+                        "JWT_SECRET": "VW5hIENsNHYzIHNlY3IzdDQ="
+                    }
+                }
+            },
+            "DependsOn": [
+                "KiraDashslsDashserviceLogGroup",
+                "IamRoleLambdaExecution"
+            ],
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "53c90c03-f996-4c24-8d24-43ae751ce408"
+                }
+            }
+        },
+        "KiraDashslsDashserviceLambdaVersionOuHMe9RQwQPk0DdcMw9MaJaaz18qcmXcO5x3ipFV8": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "KiraDashslsDashserviceLambdaFunction"
+                },
+                "CodeSha256": "ETcXkcimoNCmg4eXabfK8uTfl97MzzrvC884XmB/Ago="
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "c89d5a84-1a1b-4c2d-978f-3f997554424f"
+                }
+            }
+        }
+    },
+    "Outputs": {
+        "ServerlessDeploymentBucketName": {
+            "Value": {
+                "Ref": "ServerlessDeploymentBucket"
+            }
+        },
+        "KiraDashslsDashserviceLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+                "Ref": "KiraDashslsDashserviceLambdaVersionOuHMe9RQwQPk0DdcMw9MaJaaz18qcmXcO5x3ipFV8"
+            }
+        }
+    },
+    "Metadata": {
+        "AWS::CloudFormation::Designer": {
+            "7517428a-4074-4538-b4b0-5bee70371ab7": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 270,
+                    "y": 90
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "03b59fe2-13c9-4c0f-b2ca-d8acd1b6c8d5": {
+                "size": {
+                    "width": 150,
+                    "height": 150
+                },
+                "position": {
+                    "x": 60,
+                    "y": 90
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "13b9d4f0-24bd-460a-a4bc-780def0d8069": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 270,
+                    "y": 210
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "53c90c03-f996-4c24-8d24-43ae751ce408": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 60,
+                    "y": 300
+                },
+                "z": 1,
+                "embeds": [],
+                "dependson": [
+                    "03b59fe2-13c9-4c0f-b2ca-d8acd1b6c8d5"
+                ]
+            },
+            "c89d5a84-1a1b-4c2d-978f-3f997554424f": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 390,
+                    "y": 90
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "53c90c03-f996-4c24-8d24-43ae751ce408"
+                ]
+            }
+        }
+    }
+}

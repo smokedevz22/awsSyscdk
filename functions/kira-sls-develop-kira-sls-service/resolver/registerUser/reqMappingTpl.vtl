@@ -1,0 +1,8 @@
+#set($id=$utils.autoId())
+{
+  "version": "2018-05-29",
+  "statements": [
+      "insert into KIRADB.usuarios (nombre, apellido, email, clave, rut, celular, mailrecuperacion, persona_id) VALUES ('$context.args.input.nombre', '$context.args.input.apellido', '$context.args.input.email', '$context.args.input.clave', '$context.args.input.rut', '$context.args.input.celular', '$context.args.input.mailrecuperacion',  '$id')",
+      "select * from KIRADB.usuarios where persona_id = '$id'"
+  ]
+}

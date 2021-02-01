@@ -1,0 +1,43 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Mutation {
+  registerUser(input: RegisterUserInput!): User
+}
+
+type Query {
+  login(clave: String!, email: String!): UserAuth
+  user(id: ID!): User
+}
+
+type UserAuth {
+  token: String
+  isUnauthorized: Boolean
+  email: String
+  nombre: String
+  apellido: String
+  rut: String
+}
+
+type User {
+  apellido: String
+  celular: String
+  email: String
+  id: ID!
+  mailrecuperacion: String
+  nombre: String
+  persona_id: String
+  rut: String
+}
+
+input RegisterUserInput {
+  nombre: String!
+  apellido: String!
+  email: String!
+  rut: String!
+  clave: String!
+  celular: String
+  mailrecuperacion: String
+}
