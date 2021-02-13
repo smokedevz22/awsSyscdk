@@ -210,6 +210,7 @@ type Mutation {
   registerPlan(input: InputRegisterPlan!): Plan
   registerCoberturas(input: InputRegisterCobertura!): Cobertura
 
+  registrarNuevoRequerimiento(input: InputNuevoRequerimiento!): NuevoRequerimiento
   registerSiniestro(input: InputRegisterSiniestro!): Siniestro
   registerActividad(input: InputRegisterActividad!): Actividad
   registerProducto(input: InputRegisterProducto!): Producto
@@ -252,6 +253,7 @@ type Siniestro {
 type NuevaPoliza {
   id: String
   data_poliza: String
+  email:String
 }
 
 type NuevaCotizacion {
@@ -259,9 +261,20 @@ type NuevaCotizacion {
   data_cotizacion: String
   numero_cotizacion:String
 }
+
+
+type NuevoRequerimiento
+{
+  id:String
+  data_requerimiento:String
+  numero_poliza:String
+}
+
+
 type NuevoSiniestro {
   id: String
   data_siniestro: String
+  idPoliza:String
 }
 type ObtenerResumenCotizacion {
   direccion_inicial: String
@@ -386,17 +399,18 @@ type Query {
   listasActividades: [Actividad]
   listasPlanes: [Plan]
   listasSubPlanes: [SubPlan]
-  listasPolizas: [NuevaPoliza]
+  listasPolizas(email: String!): [NuevaPoliza]
   listasCotizaciones: [NuevaCotizacion]
   listasProductos: [Producto]
   listasSiniestros: [NuevoSiniestro]
   listasCoberturas: [Cobertura]
   listasUsuario: [User]
+  listaRequerimientos: [NuevoRequerimiento]
 
   detalleCotizacion(numero_cotizacion: String!): NuevaCotizacion
   detallePoliza(numero_poliza: String!): NuevaPoliza
   detalleSiniestro(numero_siniestro: String!): NuevoSiniestro
-
+ 
 }
 
 type ReponseDeleteCuentaDeposito {
@@ -713,6 +727,7 @@ input RegisterPolizaInput {
 
 input registrarNuevaPolizaInput {
   data_poliza: String
+  email:String
 }
 
 input registrarNuevaCotizacionInput {
@@ -721,6 +736,7 @@ input registrarNuevaCotizacionInput {
 
 input registrarNuevoSiniestroInput {
   data_siniestro: String
+  idPoliza:String
 }
 
 input RegisterUserInput {
@@ -749,6 +765,10 @@ input InputRegisterCobertura {
 
 input InputRegisterSiniestro {
   data_siniestro: String
+}
+
+input InputNuevoRequerimiento {
+  data_requerimiento: String
 }
 
 input InputRegisterActividad {

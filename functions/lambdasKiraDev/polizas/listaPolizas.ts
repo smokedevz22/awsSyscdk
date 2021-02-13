@@ -1,15 +1,28 @@
 const AWS = require("aws-sdk");
-const doClient = new AWS.DynamoDB.DocumentClient();
 
-async function getListaPolizas() {
+const doClient = new AWS.DynamoDB.DocumentClient();
+var dynamodb = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
+
+async function getListaPolizas(emailInput:any) {
   const params = {
     TableName: process.env.POLIZA_TABLE,
+    "ScanIndexForward": true,
+    "FilterExpression": "#DYNOBASE_email = :email",
+    "ExpressionAttributeNames": {
+      "#DYNOBASE_email": "email"
+    },
+    "ExpressionAttributeValues": {
+      ":email": emailInput
+    }
   };
+
+
   try {
     console.log("params", params);
-
     const data = await doClient.scan(params).promise();
-     console.log("Buscando en base de datos"+data);
+
+    console.log("Buscando en base de datos");
+    console.log(data)
 
     return data.Items;
   } catch (err) {

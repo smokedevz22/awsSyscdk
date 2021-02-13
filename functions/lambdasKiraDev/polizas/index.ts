@@ -8,7 +8,9 @@ type AppSyncEvent = {
   };
   arguments: {
     input: {};
-    numero_poliza:any
+    numero_poliza:any,
+    email:any
+
   };
   identity: {
     sub: string;
@@ -49,8 +51,9 @@ exports.handler = async (event: AppSyncEvent) => {
 
 
       case "listasPolizas":
+        let emailUsuario = event.arguments["email"];
 
-        let data = await getListaPolizas();
+        let data = await getListaPolizas(emailUsuario);
         console.log("lista-polizas",data);
 
         return data;

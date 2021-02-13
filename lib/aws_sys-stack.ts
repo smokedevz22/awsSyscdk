@@ -107,7 +107,7 @@ export class AwsSysStack extends cdk.Stack {
             expires: cdk.Expiration.after(cdk.Duration.days(365)),
           },
         },
-        additionalAuthorizationModes: [
+       additionalAuthorizationModes: [
           {
             authorizationType: appsync.AuthorizationType.USER_POOL,
             userPoolConfig: {
@@ -137,6 +137,7 @@ export class AwsSysStack extends cdk.Stack {
       },
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
+
     const actividadesTable = new ddb.Table(this, "tableActividades", {
       billingMode: ddb.BillingMode.PAY_PER_REQUEST,
       partitionKey: {
@@ -145,6 +146,7 @@ export class AwsSysStack extends cdk.Stack {
       },
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
+    
     const cotizacionesTable = new ddb.Table(this, "tableCotizaciones", {
       billingMode: ddb.BillingMode.PAY_PER_REQUEST,
       partitionKey: {
@@ -198,6 +200,14 @@ export class AwsSysStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
     const siniestrosTable = new ddb.Table(this, "tableSiniestros", {
+      billingMode: ddb.BillingMode.PAY_PER_REQUEST,
+      partitionKey: {
+        name: "id",
+        type: ddb.AttributeType.STRING,
+      },
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+    });
+    const requerimientosTable = new ddb.Table(this, "tableRequerimientos", {
       billingMode: ddb.BillingMode.PAY_PER_REQUEST,
       partitionKey: {
         name: "id",
@@ -274,6 +284,12 @@ export class AwsSysStack extends cdk.Stack {
       handler: "index.handler",
       memorySize: 1024,
     });
+    const RequerimientosFn = new lambda.Function(this, "requerimientosFunctions", {
+      runtime: lambda.Runtime.NODEJS_10_X,
+      code: new lambda.AssetCode("functions/lambdasKiraDev/requerimientos"),
+      handler: "index.handler",
+      memorySize: 1024,
+    });
     const UsersFn = new lambda.Function(this, "userFunctions", {
       runtime: lambda.Runtime.NODEJS_10_X,
       code: new lambda.AssetCode("functions/lambdasKiraDev/users"),
@@ -291,6 +307,8 @@ export class AwsSysStack extends cdk.Stack {
     polizasTable.grantFullAccess(PolizasFn);
     productosTable.grantFullAccess(ProductosFn);
     siniestrosTable.grantFullAccess(SiniestrosFn);
+    requerimientosTable.grantFullAccess(RequerimientosFn);
+
     usersTable.grantFullAccess(UsersFn);
 
     GlobalesFn.addEnvironment("GLOBAL_TABLE", globalesTable.tableName);
@@ -308,6 +326,8 @@ export class AwsSysStack extends cdk.Stack {
     PolizasFn.addEnvironment("POLIZA_TABLE", polizasTable.tableName);
     ProductosFn.addEnvironment("PRODUCTO_TABLE", productosTable.tableName);
     SiniestrosFn.addEnvironment("SINIESTRO_TABLE", siniestrosTable.tableName);
+    RequerimientosFn.addEnvironment("REQUERIMIENTOS_TABLE", requerimientosTable.tableName);
+
     UsersFn.addEnvironment("USER_TABLE", usersTable.tableName);
 
     const lambdaGlobales = api.addLambdaDataSource(
@@ -342,6 +362,11 @@ export class AwsSysStack extends cdk.Stack {
     const lambdaSiniestros = api.addLambdaDataSource(
       "siniestrosFunctions",
       SiniestrosFn
+    );
+
+    const lambdasRequerimientos = api.addLambdaDataSource(
+      "requerimientosFunctions",
+      RequerimientosFn
     );
     const lambdaUsers = api.addLambdaDataSource("usersFunctions", UsersFn);
 
@@ -471,7 +496,14 @@ export class AwsSysStack extends cdk.Stack {
       fieldName: "detalleSiniestro",
     });
 
-
+    lambdasRequerimientos.createResolver({
+      typeName: "Mutation",
+      fieldName: "registrarNuevoRequerimiento",
+    });
+    lambdasRequerimientos.createResolver({
+      typeName: "Query",
+      fieldName: "listaRequerimientos",
+    });
 
     lambdaSiniestros.createResolver({
       typeName: "Mutation",
