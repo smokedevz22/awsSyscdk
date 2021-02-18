@@ -3,10 +3,17 @@ const AWS = require("aws-sdk");
 const doClient = new AWS.DynamoDB.DocumentClient();
 var dynamodb = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
 
-async function getListaRequerimientos() {
+async function getListaSiniestrosPoliza(numero_poliza:any) {
   const params = {
-    TableName: process.env.REQUERIMIENTOS_TABLE
-    
+    TableName: process.env.SINIESTRO_TABLE,
+    "ScanIndexForward": true,
+    "FilterExpression": "#DYNOBASE_numero_poliza = :numero_poliza",
+    "ExpressionAttributeNames": {
+      "#DYNOBASE_numero_poliza": "numero_poliza"
+    },
+    "ExpressionAttributeValues": {
+      ":numero_poliza": numero_poliza
+    }
   };
 
 
@@ -24,4 +31,4 @@ async function getListaRequerimientos() {
   }
 }
 
-export default getListaRequerimientos;
+export default getListaSiniestrosPoliza;

@@ -189,7 +189,15 @@ export class AwsSysStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
-  
+    const contactoTable = new ddb.Table(this, "tableContacto", {
+      billingMode: ddb.BillingMode.PAY_PER_REQUEST,
+      partitionKey: {
+        name: "id",
+        type: ddb.AttributeType.STRING,
+      },
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+    });
+
 
     const productosTable = new ddb.Table(this, "tableProductos", {
       billingMode: ddb.BillingMode.PAY_PER_REQUEST,
@@ -272,6 +280,13 @@ export class AwsSysStack extends cdk.Stack {
       handler: "index.handler",
       memorySize: 1024,
     });
+    const ContactoFn = new lambda.Function(this, "contactoFunctions", {
+      runtime: lambda.Runtime.NODEJS_10_X,
+      code: new lambda.AssetCode("functions/lambdasKiraDev/contacto"),
+      handler: "index.handler",
+      memorySize: 1024,
+    });
+
     const ProductosFn = new lambda.Function(this, "productosFunctions", {
       runtime: lambda.Runtime.NODEJS_10_X,
       code: new lambda.AssetCode("functions/lambdasKiraDev/productos"),
@@ -298,6 +313,8 @@ export class AwsSysStack extends cdk.Stack {
     });
 
     globalesTable.grantFullAccess(GlobalesFn);
+    contactoTable.grantFullAccess(ContactoFn);
+
     coberturasTable.grantFullAccess(CoberturasFn)
     actividadesTable.grantFullAccess(ActividadesFn);
     cotizacionesTable.grantFullAccess(CotizacionesFn);
@@ -314,6 +331,7 @@ export class AwsSysStack extends cdk.Stack {
     GlobalesFn.addEnvironment("GLOBAL_TABLE", globalesTable.tableName);
     ActividadesFn.addEnvironment("ACTIVIDAD_TABLE", actividadesTable.tableName);
     CoberturasFn.addEnvironment("COBERTURA_TABLE", coberturasTable.tableName);
+    ContactoFn.addEnvironment("CONTACTO_TABLE", contactoTable.tableName);
 
     CotizacionesFn.addEnvironment(
       "COTIZACION_TABLE",
@@ -333,6 +351,10 @@ export class AwsSysStack extends cdk.Stack {
     const lambdaGlobales = api.addLambdaDataSource(
       "globalFunctions",
       GlobalesFn
+    );
+    const lambdaContacto = api.addLambdaDataSource(
+      "contactoFunctions",
+      ContactoFn
     );
     const lambdaCoberturas = api.addLambdaDataSource(
       "coberturasFunctions",
@@ -391,6 +413,15 @@ export class AwsSysStack extends cdk.Stack {
     });
     */
      
+    //***  CONTACTO */
+    lambdaContacto.createResolver({
+      typeName: "Mutation",
+      fieldName: "registrarNuevoContacto",
+    });
+    lambdaContacto.createResolver({
+      typeName: "Query",
+      fieldName: "listaContacto",
+    });
 
     //***  ACTIVIDADES */
     lambdaActividades.createResolver({
@@ -417,8 +448,16 @@ export class AwsSysStack extends cdk.Stack {
       fieldName: "registrarNuevaCotizacion",
     });
     lambdaCotizaciones.createResolver({
+      typeName: "Mutation",
+      fieldName: "eliminarCotizacion",
+    });
+    lambdaCotizaciones.createResolver({
       typeName: "Query",
       fieldName: "listasCotizaciones",
+    });
+    lambdaCotizaciones.createResolver({
+      typeName: "Query",
+      fieldName: "listasCotizacionesEmail",
     });
 
     lambdaCotizaciones.createResolver({
@@ -466,6 +505,9 @@ export class AwsSysStack extends cdk.Stack {
       typeName: "Query",
       fieldName: "listasPolizas",
     });
+   
+    
+
     lambdaPolizas.createResolver({
       typeName: "Mutation",
       fieldName: "deletePoliza",
@@ -490,7 +532,14 @@ export class AwsSysStack extends cdk.Stack {
       typeName: "Query",
       fieldName: "listasSiniestros",
     });
-    
+     lambdaSiniestros.createResolver({
+      typeName: "Query",
+      fieldName: "listasSiniestrosPoliza",
+    });
+    lambdaSiniestros.createResolver({
+      typeName: "Query",
+      fieldName: "listaSiniestrosEmail",
+    });
     lambdaSiniestros.createResolver({
       typeName: "Query",
       fieldName: "detalleSiniestro",
@@ -504,7 +553,14 @@ export class AwsSysStack extends cdk.Stack {
       typeName: "Query",
       fieldName: "listaRequerimientos",
     });
-
+    lambdasRequerimientos.createResolver({
+      typeName: "Query",
+      fieldName: "listasRequerimientosSiniestro",
+    });
+    lambdasRequerimientos.createResolver({
+      typeName: "Mutation",
+      fieldName: "actualizarRequerimientoSiniestro",
+    });
     lambdaSiniestros.createResolver({
       typeName: "Mutation",
       fieldName: "desestimarSiniestro",
@@ -518,6 +574,20 @@ export class AwsSysStack extends cdk.Stack {
     lambdaUsers.createResolver({
       typeName: "Query",
       fieldName: "listasUsuario",
+    });
+    lambdaUsers.createResolver({
+      typeName: "Mutation",
+      fieldName: "registrarNuevoUsuario",
+    });
+
+    lambdaUsers.createResolver({
+      typeName: "Mutation",
+      fieldName: "actualizarNuevoUsuario",
+    });
+
+    lambdaUsers.createResolver({
+      typeName: "Query",
+      fieldName: "detalleNuevoUsuario",
     });
 
     new cdk.CfnOutput(this, "GraphQLAPIURL", {

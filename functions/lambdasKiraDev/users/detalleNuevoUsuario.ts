@@ -3,10 +3,17 @@ const AWS = require("aws-sdk");
 const doClient = new AWS.DynamoDB.DocumentClient();
 var dynamodb = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
 
-async function getListaRequerimientos() {
+async function getListaCotizacionesEmail(emailInput:any) {
   const params = {
-    TableName: process.env.REQUERIMIENTOS_TABLE
-    
+    TableName: process.env.USER_TABLE,
+    "ScanIndexForward": true,
+    "FilterExpression": "#DYNOBASE_email = :email",
+    "ExpressionAttributeNames": {
+      "#DYNOBASE_email": "email"
+    },
+    "ExpressionAttributeValues": {
+      ":email": emailInput
+    }
   };
 
 
@@ -24,4 +31,4 @@ async function getListaRequerimientos() {
   }
 }
 
-export default getListaRequerimientos;
+export default getListaCotizacionesEmail;

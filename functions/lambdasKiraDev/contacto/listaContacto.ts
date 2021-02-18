@@ -3,9 +3,9 @@ const AWS = require("aws-sdk");
 const doClient = new AWS.DynamoDB.DocumentClient();
 var dynamodb = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
 
-async function getListaRequerimientos() {
+async function getListaContacto() {
   const params = {
-    TableName: process.env.REQUERIMIENTOS_TABLE
+    TableName: process.env.CONTACTO_TABLE,
     
   };
 
@@ -24,4 +24,4 @@ async function getListaRequerimientos() {
   }
 }
 
-export default getListaRequerimientos;
+export default getListaContacto;

@@ -219,6 +219,12 @@ type Mutation {
     input: registrarNuevaCotizacionInput
   ): NuevaCotizacion
   registrarNuevoSiniestro(input: registrarNuevoSiniestroInput): NuevoSiniestro
+  registrarNuevoContacto(input: registrarNuevoContactoInput): NuevoContacto
+
+  registrarNuevoUsuario(input: registrarNuevoUsuarioInput): NuevoUsuario
+  actualizarNuevoUsuario(input: registrarNuevoUsuarioInput): UsuarioActualizar
+  actualizarRequerimientoSiniestro(input: InputActualizacionNuevoRequerimiento): NuevoRequerimiento
+  eliminarCotizacion(numero_cotizacion!):Cotizacion
 }
 
 type Producto {
@@ -259,7 +265,7 @@ type NuevaPoliza {
 type NuevaCotizacion {
   id: String
   data_cotizacion: String
-  numero_cotizacion:String
+  email:String
 }
 
 
@@ -267,15 +273,33 @@ type NuevoRequerimiento
 {
   id:String
   data_requerimiento:String
-  numero_poliza:String
+  numero_siniestro:String
 }
-
 
 type NuevoSiniestro {
   id: String
   data_siniestro: String
-  idPoliza:String
+  numero_poliza:String
+  email:String
 }
+
+type NuevoUsuario {
+  id: String
+  data_usuario: String
+  email:String
+}
+
+type UsuarioActualizar {
+  data_usuario: String
+  email:String
+}
+
+type NuevoContacto {
+  id: String
+  data_contacto: String
+ }
+
+
 type ObtenerResumenCotizacion {
   direccion_inicial: String
   fecha_fin: String
@@ -400,17 +424,25 @@ type Query {
   listasPlanes: [Plan]
   listasSubPlanes: [SubPlan]
   listasPolizas(email: String!): [NuevaPoliza]
+  listasCotizacionesEmail(email: String!): [NuevaCotizacion]
+  listasSiniestrosPoliza(numero_poliza: String!): [NuevoSiniestro]
+  listaSiniestrosEmail(email: String!): [NuevoSiniestro]
+
+  listasRequerimientosSiniestro(numero_siniestro: String!): [NuevoRequerimiento]
+ 
   listasCotizaciones: [NuevaCotizacion]
   listasProductos: [Producto]
   listasSiniestros: [NuevoSiniestro]
   listasCoberturas: [Cobertura]
   listasUsuario: [User]
   listaRequerimientos: [NuevoRequerimiento]
+  listaContacto: [NuevoContacto]
 
   detalleCotizacion(numero_cotizacion: String!): NuevaCotizacion
   detallePoliza(numero_poliza: String!): NuevaPoliza
   detalleSiniestro(numero_siniestro: String!): NuevoSiniestro
- 
+  detalleNuevoUsuario(email: String!): [NuevoUsuario]
+
 }
 
 type ReponseDeleteCuentaDeposito {
@@ -724,21 +756,6 @@ input RegisterPolizaInput {
   tipo_actividad: String
   usuario_principal: String
 }
-
-input registrarNuevaPolizaInput {
-  data_poliza: String
-  email:String
-}
-
-input registrarNuevaCotizacionInput {
-  data_cotizacion: String
-}
-
-input registrarNuevoSiniestroInput {
-  data_siniestro: String
-  idPoliza:String
-}
-
 input RegisterUserInput {
   apellido: String!
   celular: String
@@ -748,6 +765,54 @@ input RegisterUserInput {
   nombre: String!
   rut: String!
 }
+
+
+
+
+input registrarNuevaPolizaInput {
+  data_poliza: String
+  email:String
+}
+
+input registrarNuevaCotizacionInput {
+  data_cotizacion: String
+  email:String
+
+}
+
+input registrarNuevoSiniestroInput {
+  data_siniestro: String
+  numero_poliza:String
+  email:String
+}
+
+input registrarNuevoUsuarioInput {
+  data_usuario: String
+  email:String
+}
+
+
+input InputNuevoRequerimiento {
+  data_requerimiento: String
+  numero_siniestro:String
+}
+
+
+input InputActualizacionNuevoRequerimiento {
+  data_requerimiento: String
+  numero_siniestro:String
+  id_requerimiento:String
+
+}
+
+
+input InputEliminarCotizacion {
+  numero_cotizacion:String
+}
+
+input registrarNuevoContactoInput {
+  data_contacto: String
+ }
 
 input InputRegisterPlan {
   data_plan: String
@@ -767,9 +832,6 @@ input InputRegisterSiniestro {
   data_siniestro: String
 }
 
-input InputNuevoRequerimiento {
-  data_requerimiento: String
-}
 
 input InputRegisterActividad {
   data_actividad: String

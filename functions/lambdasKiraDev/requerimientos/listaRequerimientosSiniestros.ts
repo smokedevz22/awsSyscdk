@@ -3,10 +3,17 @@ const AWS = require("aws-sdk");
 const doClient = new AWS.DynamoDB.DocumentClient();
 var dynamodb = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
 
-async function getListaRequerimientos() {
+async function getListaRequerimientosSiniestro(idSiniestroInput:any) {
   const params = {
-    TableName: process.env.REQUERIMIENTOS_TABLE
-    
+    TableName: process.env.REQUERIMIENTOS_TABLE,
+    "ScanIndexForward": true,
+    "FilterExpression": "#DYNOBASE_idSiniestro = :idSiniestro",
+    "ExpressionAttributeNames": {
+      "#DYNOBASE_idSiniestro": "numero_siniestro"
+    },
+    "ExpressionAttributeValues": {
+      ":idSiniestro": idSiniestroInput
+    }
   };
 
 
@@ -24,4 +31,4 @@ async function getListaRequerimientos() {
   }
 }
 
-export default getListaRequerimientos;
+export default getListaRequerimientosSiniestro;

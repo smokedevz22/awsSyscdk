@@ -1,5 +1,7 @@
+import fnActualizarRequerimiento from "./actualizarRequerimiento";
 import registrarRequerimiento from "./createRequerimiento";
- import getListaRequerimientos from "./listaRequerimientos";
+import getListaRequerimientos from "./listaRequerimientos";
+import getListaRequerimientosSiniestro from "./listaRequerimientosSiniestros";
 
 type AppSyncEvent = {
   info: {
@@ -7,33 +9,58 @@ type AppSyncEvent = {
   };
   arguments: {
     input: {};
+    numero_siniestro: string;
+
   };
   identity: {
     sub: string;
-    username: string;
   };
 };
 
 exports.handler = async (event: AppSyncEvent) => {
   console.log("EVENT-ARGUMENTS", event);
 
+
+  let inputRequerimiento = event.arguments["input"];
+  let numeroSiniestro = event.arguments["numero_siniestro"]
+
+
   switch (event.info.fieldName) {
     case "registrarNuevoRequerimiento":
-      let dataUsuario = event.arguments["input"];
-      let itemUsuario = {
-        ...dataUsuario,
+      let dataRequerimiento = inputRequerimiento;
+      let itemToSave = {
+        ...dataRequerimiento,
       };
-      let responseUsuario = await registrarRequerimiento(itemUsuario);
+      let responseSave = await registrarRequerimiento(itemToSave);
 
-      console.log("server-response", responseUsuario);
-      return responseUsuario;
- 
+      console.log("server-response", responseSave);
+      return responseSave;
+
     case "listaRequerimientos":
-      console.log("listaProductos");
 
-      let data = await getListaRequerimientos();
-      return data;
+      let listaRequerimientos = await getListaRequerimientos();
 
+      console.log("listaRequerimientos", listaRequerimientos);
+      return listaRequerimientos;
+
+
+
+
+    case "listasRequerimientosSiniestro":
+      let listaRequerimientosSiniestro = await getListaRequerimientosSiniestro(numeroSiniestro);
+
+      return listaRequerimientosSiniestro;
+
+
+
+    case "actualizarRequerimientoSiniestro":
+      let dataRequerimientoPoliza = inputRequerimiento;
+      let itemToUpdate= {
+        ...dataRequerimientoPoliza,
+      };
+      let listaRequerimientosSiniestroPoliza = await fnActualizarRequerimiento(itemToUpdate);
+
+      return listaRequerimientosSiniestroPoliza;
     default:
       return null;
   }

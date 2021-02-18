@@ -8,8 +8,7 @@ async function registerCotizacion(cotizacionItem: any) {
   cotizacionItem = {
     ...cotizacionItem,
     id: String(itemId),
-    numero_cotizacion: String(itemId),
-
+ 
   };
   const params = {
     TableName: process.env.COTIZACION_TABLE,

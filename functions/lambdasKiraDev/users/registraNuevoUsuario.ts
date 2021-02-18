@@ -1,24 +1,23 @@
 const AWS = require("aws-sdk");
 const doClient = new AWS.DynamoDB.DocumentClient();
 
-async function createRequerimiento(requerimientoItem: any) {
-  
+async function fnRegistrarNuevoUsuario(userRegister: any) {
+
   let itemId = randomInteger(1, 100000000);
 
-  requerimientoItem = {
-    ...requerimientoItem,
+  userRegister = {
+    ...userRegister,
     id: String(itemId),
- 
   };
   const params = {
-    TableName: process.env.REQUERIMIENTOS_TABLE,
-    Item: requerimientoItem,
+    TableName: process.env.USER_TABLE,
+    Item: userRegister,
   };
   try {
     console.log("Registrando en base de datos");
-    console.log("requerimiento", requerimientoItem);
+    console.log("usuario", userRegister);
     await doClient.put(params).promise();
-    return requerimientoItem;
+    return userRegister;
   } catch (err) {
     console.log("DynamDb error", err);
     return err;
@@ -28,4 +27,4 @@ async function createRequerimiento(requerimientoItem: any) {
 function randomInteger(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-export default createRequerimiento;
+export default fnRegistrarNuevoUsuario;
